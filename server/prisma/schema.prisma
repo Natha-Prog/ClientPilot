@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int        @id @default(autoincrement())
+  email        String     @unique
+  passwordHash String
+  name         String
+  role         String     @default("operator")
+  createdAt    DateTime   @default(now())
+  clients      Client[]
+  prospects    Prospect[]
+  tasks        Task[]
+  notes        Note[]
+}
+
+model Client {
+  id        Int      @id @default(autoincrement())
+  name      String
+  company   String?
+  email     String?
+  phone     String?
+  status    String   @default("active")
+  notes     String?
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  tasks     Task[]
+}
+
+model Prospect {
+  id        Int      @id @default(autoincrement())
+  name      String
+  company   String?
+  email     String?
+  phone     String?
+  source    String?
+  status    String   @default("new")
+  notes     String?
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  tasks     Task[]
+}
+
+model Task {
+  id          Int       @id @default(autoincrement())
+  title       String
+  description String?
+  priority    String    @default("medium")
+  dueDate     DateTime?
+  completed   Boolean   @default(false)
+  relatedTo   String?
+  relatedType String?
+  userId      Int
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  clientId    Int?
+  client      Client?   @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  prospectId  Int?
+  prospect    Prospect? @relation(fields: [prospectId], references: [id], onDelete: SetNull)
+  createdAt   DateTime  @default(now())
+}
+
+model Note {
+  id         Int      @id @default(autoincrement())
+  content    String
+  entityType String   @default("general")
+  entityId   Int?
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+}

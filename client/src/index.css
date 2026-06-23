@@ -1,0 +1,110 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Brand — aligned with logo (navy + orange) */
+    --brand-navy: 203 47% 18%;
+    --brand-navy-light: 203 35% 28%;
+    --brand-orange: 24 95% 53%;
+    --brand-orange-dark: 20 90% 46%;
+
+    /* Surfaces */
+    --background: 210 25% 97%;
+    --foreground: 203 40% 12%;
+    --card: 0 0% 100%;
+    --card-foreground: 203 40% 12%;
+
+    /* Actions */
+    --primary: 24 95% 53%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 203 20% 92%;
+    --secondary-foreground: 203 40% 18%;
+    --muted: 210 20% 94%;
+    --muted-foreground: 203 15% 42%;
+    --accent: 203 20% 92%;
+    --accent-foreground: 203 40% 18%;
+
+    /* Sidebar — light professional */
+    --sidebar: 0 0% 100%;
+    --sidebar-foreground: 203 47% 18%;
+    --sidebar-muted: 203 15% 45%;
+    --sidebar-accent: 24 95% 53%;
+    --sidebar-active: 203 25% 95%;
+    --sidebar-border: 210 18% 90%;
+
+    /* Semantic */
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --success: 152 60% 36%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 203 40% 12%;
+    --info: 203 60% 45%;
+
+    --border: 210 18% 88%;
+    --input: 210 18% 88%;
+    --ring: 24 95% 53%;
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif;
+  }
+}
+
+@layer components {
+  .badge {
+    @apply inline-flex items-center text-xs font-medium px-2.5 py-0.5 rounded-full border;
+  }
+  .badge-success {
+    @apply badge bg-emerald-50 text-emerald-800 border-emerald-200;
+  }
+  .badge-muted {
+    @apply badge bg-slate-100 text-slate-600 border-slate-200;
+  }
+  .badge-info {
+    @apply badge bg-sky-50 text-sky-800 border-sky-200;
+  }
+  .badge-warning {
+    @apply badge bg-amber-50 text-amber-800 border-amber-200;
+  }
+  .badge-danger {
+    @apply badge bg-red-50 text-red-800 border-red-200;
+  }
+  .badge-brand {
+    @apply badge bg-orange-50 text-orange-800 border-orange-200;
+  }
+  .badge-navy {
+    @apply badge bg-slate-100 text-slate-800 border-slate-300;
+  }
+  .page-title {
+    @apply text-2xl lg:text-3xl font-bold tracking-tight text-foreground;
+  }
+  .page-subtitle {
+    @apply text-muted-foreground text-sm lg:text-base;
+  }
+
+  .nav-link {
+    @apply w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all border-l-[3px] border-l-transparent text-sidebar-muted;
+  }
+  .nav-link:hover {
+    background-color: hsl(24 95% 53% / 0.12);
+    color: hsl(24 95% 53%);
+    border-left-color: hsl(24 95% 53% / 0.6);
+  }
+  .nav-link-active {
+    background-color: hsl(24 95% 53% / 0.15);
+    color: hsl(24 95% 53%);
+    border-left-color: hsl(24 95% 53%);
+    font-weight: 600;
+    box-shadow: 0 1px 2px rgb(15 35 52 / 0.06);
+  }
+}
