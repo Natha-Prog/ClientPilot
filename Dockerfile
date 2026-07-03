@@ -13,7 +13,7 @@ RUN npm install
 COPY client/package*.json ./client/
 RUN cd client && npm install
 COPY client ./client
-RUN cd client && npm run build
+RUN cd client && npm run build && ls -la dist/
 
 # Install server dependencies and generate Prisma client
 COPY server/package*.json ./server/

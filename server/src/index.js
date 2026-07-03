@@ -36,9 +36,12 @@ app.use('/api/dashboard', dashboardRoutes)
 
 if (process.env.NODE_ENV === 'production') {
   const clientDist = path.join(__dirname, '../../client/dist')
+  console.log('Serving static files from:', clientDist)
+  console.log('Dist directory exists:', require('fs').existsSync(clientDist))
   app.use(express.static(clientDist))
   app.get('*', (req, res) => {
     if (!req.path.startsWith('/api')) {
+      console.log('Serving index.html for:', req.path)
       res.sendFile(path.join(clientDist, 'index.html'))
     }
   })
