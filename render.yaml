@@ -1,0 +1,27 @@
+services:
+  # PostgreSQL Database
+  - type: postgres
+    name: clientpilot-db
+    databaseName: clientpilot
+    user: clientpilot
+    plan: free
+    ipAllowList: []
+
+  # Web Service (Backend + Frontend)
+  - type: web
+    name: clientpilot
+    env: docker
+    plan: free
+    dockerContext: .
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: clientpilot-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: PORT
+        value: 3001
