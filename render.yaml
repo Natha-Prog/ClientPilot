@@ -10,10 +10,10 @@ services:
   # Web Service (Backend + Frontend)
   - type: web
     name: clientpilot
-    env: docker
+    env: node
     plan: free
-    dockerContext: .
-    dockerfilePath: ./Dockerfile
+    buildCommand: npm install && cd client && npm install && npm run build && cd ../server && npm install && npx prisma generate
+    startCommand: node server/src/index.js
     envVars:
       - key: NODE_ENV
         value: production
@@ -25,3 +25,5 @@ services:
         generateValue: true
       - key: PORT
         value: 3001
+      - key: CLIENT_URL
+        value: https://clientpilot.onrender.com
