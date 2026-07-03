@@ -10,10 +10,10 @@ services:
   # Web Service (Backend + Frontend)
   - type: web
     name: clientpilot
-    env: node
+    env: docker
     plan: free
-    buildCommand: npm install --legacy-peer-deps && npm run build
-    startCommand: npm start
+    dockerContext: .
+    dockerfilePath: ./Dockerfile
     envVars:
       - key: NODE_ENV
         value: production
