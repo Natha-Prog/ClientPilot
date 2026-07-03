@@ -11,7 +11,7 @@ RUN npm install
 
 # Install client dependencies and build
 COPY client/package*.json ./client/
-RUN cd client && npm install
+RUN cd client && npm install --legacy-peer-deps
 COPY client ./client
 RUN cd client && npm run build && ls -la dist/
 
