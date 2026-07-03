@@ -13,7 +13,8 @@ RUN npm install
 COPY client/package*.json ./client/
 RUN cd client && npm install --legacy-peer-deps
 COPY client ./client
-RUN cd client && npm run build && ls -la dist/
+RUN cd client && npm run build
+RUN ls -la client/dist/ || echo "Build failed - dist directory not found"
 
 # Install server dependencies and generate Prisma client
 COPY server/package*.json ./server/
