@@ -12,7 +12,7 @@ services:
     name: clientpilot
     env: node
     plan: free
-    buildCommand: cd client && npm install && npx vite build && cd ../server && npm install && npx prisma generate
+    buildCommand: cd client && npm install --legacy-peer-deps && ./node_modules/.bin/vite build && cd ../server && npm install --legacy-peer-deps && ./node_modules/.bin/prisma generate
     startCommand: node server/src/index.js
     envVars:
       - key: NODE_ENV
