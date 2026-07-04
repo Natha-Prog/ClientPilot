@@ -43,6 +43,13 @@ if (isProduction || distExists) {
     console.log('Files in dist:', files)
   }
   
+  // Log all requests
+  app.use((req, res, next) => {
+    console.log(`${req.method} ${req.path}`)
+    next()
+  })
+  
+  // Serve static files
   app.use(express.static(clientDist))
   
   app.get('*', (req, res) => {
