@@ -24,4 +24,4 @@ services:
       - key: JWT_SECRET
         generateValue: true
       - key: CLIENT_URL
-        value: https://gestion-client-1rk8.onrender.com
+        value: https://clientpilot-1.onrender.com
