@@ -27,23 +27,12 @@ app.use(cors({
 app.use(express.json())
 app.use(cookieParser())
 
-app.use('/api/auth', authRoutes)
-app.use('/api/clients', clientRoutes)
-app.use('/api/prospects', prospectRoutes)
-app.use('/api/tasks', taskRoutes)
-app.use('/api/notes', noteRoutes)
-app.use('/api/users', userRoutes)
-app.use('/api/dashboard', dashboardRoutes)
-
 if (process.env.NODE_ENV === 'production') {
   const clientDist = path.join(__dirname, '../../client/dist')
   console.log('Serving static files from:', clientDist)
   console.log('Dist directory exists:', fs.existsSync(clientDist))
   
-  app.use(express.static(clientDist, {
-    index: 'index.html',
-    fallthrough: true
-  }))
+  app.use(express.static(clientDist))
   
   app.get('*', (req, res) => {
     if (!req.path.startsWith('/api')) {
@@ -57,6 +46,14 @@ if (process.env.NODE_ENV === 'production') {
     }
   })
 }
+
+app.use('/api/auth', authRoutes)
+app.use('/api/clients', clientRoutes)
+app.use('/api/prospects', prospectRoutes)
+app.use('/api/tasks', taskRoutes)
+app.use('/api/notes', noteRoutes)
+app.use('/api/users', userRoutes)
+app.use('/api/dashboard', dashboardRoutes)
 
 app.use(errorHandler)
 
