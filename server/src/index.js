@@ -27,13 +27,18 @@ app.use(cors({
 app.use(express.json())
 app.use(cookieParser())
 
-if (process.env.NODE_ENV === 'production') {
-  const clientDist = path.join(__dirname, '../../client/dist')
-  console.log('NODE_ENV:', process.env.NODE_ENV)
-  console.log('Serving static files from:', clientDist)
-  console.log('Dist directory exists:', fs.existsSync(clientDist))
-  
-  if (fs.existsSync(clientDist)) {
+// Always serve static files in production or when dist exists
+const clientDist = path.join(__dirname, '../../client/dist')
+const isProduction = process.env.NODE_ENV === 'production'
+const distExists = fs.existsSync(clientDist)
+
+console.log('NODE_ENV:', process.env.NODE_ENV)
+console.log('Is production:', isProduction)
+console.log('Dist directory:', clientDist)
+console.log('Dist exists:', distExists)
+
+if (isProduction || distExists) {
+  if (distExists) {
     const files = fs.readdirSync(clientDist)
     console.log('Files in dist:', files)
   }
@@ -41,8 +46,6 @@ if (process.env.NODE_ENV === 'production') {
   app.use(express.static(clientDist))
   
   app.get('*', (req, res) => {
-    console.log('Request path:', req.path)
-    console.log('Request method:', req.method)
     if (!req.path.startsWith('/api')) {
       console.log('Serving index.html for:', req.path)
       res.sendFile(path.join(clientDist, 'index.html'), (err) => {
