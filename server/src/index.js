@@ -27,6 +27,15 @@ app.use(cors({
 app.use(express.json())
 app.use(cookieParser())
 
+// API routes must be defined BEFORE static file serving
+app.use('/api/auth', authRoutes)
+app.use('/api/clients', clientRoutes)
+app.use('/api/prospects', prospectRoutes)
+app.use('/api/tasks', taskRoutes)
+app.use('/api/notes', noteRoutes)
+app.use('/api/users', userRoutes)
+app.use('/api/dashboard', dashboardRoutes)
+
 // Always serve static files in production or when dist exists
 const clientDist = path.join(__dirname, '../../client/dist')
 const isProduction = process.env.NODE_ENV === 'production'
@@ -64,14 +73,6 @@ if (isProduction || distExists) {
     }
   })
 }
-
-app.use('/api/auth', authRoutes)
-app.use('/api/clients', clientRoutes)
-app.use('/api/prospects', prospectRoutes)
-app.use('/api/tasks', taskRoutes)
-app.use('/api/notes', noteRoutes)
-app.use('/api/users', userRoutes)
-app.use('/api/dashboard', dashboardRoutes)
 
 app.use(errorHandler)
 
