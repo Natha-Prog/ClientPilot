@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import { api } from '../lib/api'
+import { storage, STORAGE_KEYS_CONST } from '../lib/storage'
 
 const AuthContext = createContext(null)
 
@@ -15,14 +16,23 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    const savedAuth = storage.get(STORAGE_KEYS_CONST.AUTH)
+    if (savedAuth) {
+      setUser(savedAuth.user)
+      setIsAuthenticated(savedAuth.isAuthenticated)
+      setLoading(false)
+    }
+
     api.me()
       .then((userData) => {
         setUser(userData)
         setIsAuthenticated(true)
+        storage.set(STORAGE_KEYS_CONST.AUTH, { user: userData, isAuthenticated: true })
       })
       .catch(() => {
         setUser(null)
         setIsAuthenticated(false)
+        storage.remove(STORAGE_KEYS_CONST.AUTH)
       })
       .finally(() => setLoading(false))
   }, [])
@@ -32,6 +42,7 @@ export const AuthProvider = ({ children }) => {
       const userData = await api.login(email, password)
       setUser(userData)
       setIsAuthenticated(true)
+      storage.set(STORAGE_KEYS_CONST.AUTH, { user: userData, isAuthenticated: true })
       return { success: true }
     } catch (err) {
       return { success: false, error: err.message }
@@ -43,6 +54,7 @@ export const AuthProvider = ({ children }) => {
       const userData = await api.register(email, password, name, role)
       setUser(userData)
       setIsAuthenticated(true)
+      storage.set(STORAGE_KEYS_CONST.AUTH, { user: userData, isAuthenticated: true })
       return { success: true }
     } catch (err) {
       return { success: false, error: err.message }
@@ -57,6 +69,7 @@ export const AuthProvider = ({ children }) => {
     }
     setUser(null)
     setIsAuthenticated(false)
+    storage.remove(STORAGE_KEYS_CONST.AUTH)
   }
 
   const isAdmin = () => user?.role === 'admin'

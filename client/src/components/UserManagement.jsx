@@ -8,7 +8,7 @@ import { Input } from './ui/input'
 import { Skeleton } from './ui/skeleton'
 import { Dialog, DialogHeader, DialogTitle, DialogContent, DialogFooter, DialogClose } from './ui/dialog'
 import { Select } from './ui/select'
-import { Plus, Pencil, Trash2, Shield, User, Crown } from 'lucide-react'
+import { Plus, Pencil, Trash2, Shield, User, Crown, Eye, EyeOff } from 'lucide-react'
 import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import { toast } from 'sonner'
@@ -21,6 +21,7 @@ const UserManagement = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [editingUser, setEditingUser] = useState(null)
   const [formData, setFormData] = useState({ email: '', name: '', role: 'operator', password: '' })
+  const [showPassword, setShowPassword] = useState(false)
 
   useEffect(() => { loadUsers() }, [])
 
@@ -149,7 +150,23 @@ const UserManagement = () => {
             </div>
             <div>
               <label className="text-sm font-medium">{editingUser ? 'Nouveau mot de passe (vide = inchangé)' : 'Mot de passe *'}</label>
-              <Input required={!editingUser} type="password" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} minLength={6} />
+              <div className="relative">
+                <Input
+                  required={!editingUser}
+                  type={showPassword ? 'text' : 'password'}
+                  className="pr-10"
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  minLength={6}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
             </div>
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>Annuler</Button>
