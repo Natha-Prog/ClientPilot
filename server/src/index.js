@@ -1,6 +1,7 @@
 import dotenv from 'dotenv'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import fs from 'fs'
 import express from 'express'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
@@ -37,12 +38,22 @@ app.use('/api/dashboard', dashboardRoutes)
 if (process.env.NODE_ENV === 'production') {
   const clientDist = path.join(__dirname, '../../client/dist')
   console.log('Serving static files from:', clientDist)
-  console.log('Dist directory exists:', require('fs').existsSync(clientDist))
-  app.use(express.static(clientDist))
+  console.log('Dist directory exists:', fs.existsSync(clientDist))
+  
+  app.use(express.static(clientDist, {
+    index: 'index.html',
+    fallthrough: true
+  }))
+  
   app.get('*', (req, res) => {
     if (!req.path.startsWith('/api')) {
       console.log('Serving index.html for:', req.path)
-      res.sendFile(path.join(clientDist, 'index.html'))
+      res.sendFile(path.join(clientDist, 'index.html'), (err) => {
+        if (err) {
+          console.error('Error serving index.html:', err)
+          res.status(404).send('Not found')
+        }
+      })
     }
   })
 }
