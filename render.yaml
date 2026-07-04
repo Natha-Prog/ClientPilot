@@ -23,7 +23,5 @@ services:
           property: connectionString
       - key: JWT_SECRET
         generateValue: true
-      - key: PORT
-        value: 3001
       - key: CLIENT_URL
-        value: https://clientpilot.onrender.com
+        value: https://gestion-client-1rk8.onrender.com
