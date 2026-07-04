@@ -14,13 +14,15 @@ COPY client/package*.json ./client/
 RUN cd client && npm install --legacy-peer-deps
 COPY client ./client
 RUN cd client && npm run build
-RUN ls -la client/dist/
 
 # Install server dependencies and generate Prisma client
 COPY server/package*.json ./server/
 RUN cd server && npm install
 COPY server ./server
 RUN cd server && npx prisma generate
+
+# Verify build output
+RUN ls -la client/dist/ && echo "Build successful"
 
 # Expose port
 EXPOSE 3001
