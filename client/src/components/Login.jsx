@@ -50,11 +50,33 @@ const Login = () => {
     setLoading(false)
   }
 
+  const particles = [
+    { left: '8%', delay: '0s', duration: '14s' },
+    { left: '20%', delay: '3s', duration: '18s' },
+    { left: '34%', delay: '6s', duration: '15s' },
+    { left: '48%', delay: '1.5s', duration: '20s' },
+    { left: '62%', delay: '4.5s', duration: '16s' },
+    { left: '76%', delay: '2s', duration: '19s' },
+    { left: '88%', delay: '5.5s', duration: '13s' },
+    { left: '94%', delay: '7s', duration: '17s' },
+  ]
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-brand-navy p-4 relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-brand-navy via-brand-navy-light/30 to-brand-navy opacity-90" />
-      <div className="absolute top-0 right-0 w-96 h-96 bg-brand-orange/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-      <Card className="w-full max-w-md shadow-2xl border-0 relative z-10">
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+      <div className="auth-bg">
+        <div className="auth-grid" />
+        <div className="auth-orb auth-orb-1" />
+        <div className="auth-orb auth-orb-2" />
+        <div className="auth-orb auth-orb-3" />
+        {particles.map((p, i) => (
+          <span
+            key={i}
+            className="auth-particle"
+            style={{ left: p.left, bottom: '-10px', animationDelay: p.delay, animationDuration: p.duration }}
+          />
+        ))}
+      </div>
+      <Card className="w-full max-w-md shadow-2xl border-0 relative z-10 backdrop-blur-sm bg-card/95">
         <CardHeader className="text-center pb-2">
           <div className="flex justify-center mb-2">
             <img src="/logo.png" alt="ClientPilot" className="h-24 w-auto object-contain" />

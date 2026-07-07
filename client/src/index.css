@@ -108,3 +108,102 @@
     box-shadow: 0 1px 2px rgb(15 35 52 / 0.06);
   }
 }
+
+@layer components {
+  .auth-bg {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 20% 20%, hsl(203 47% 22%), transparent 55%),
+      radial-gradient(circle at 80% 80%, hsl(203 40% 24%), transparent 55%),
+      hsl(var(--brand-navy));
+  }
+
+  .auth-grid {
+    position: absolute;
+    inset: -50%;
+    background-image:
+      linear-gradient(hsl(0 0% 100% / 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(0 0% 100% / 0.04) 1px, transparent 1px);
+    background-size: 46px 46px;
+    transform: perspective(600px) rotateX(58deg);
+    transform-origin: center top;
+    animation: auth-grid-move 22s linear infinite;
+    opacity: 0.5;
+  }
+
+  .auth-orb {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(64px);
+    will-change: transform;
+  }
+  .auth-orb-1 {
+    width: 26rem;
+    height: 26rem;
+    top: -6rem;
+    right: -4rem;
+    background: hsl(24 95% 53% / 0.35);
+    animation: auth-float-1 16s ease-in-out infinite;
+  }
+  .auth-orb-2 {
+    width: 22rem;
+    height: 22rem;
+    bottom: -6rem;
+    left: -4rem;
+    background: hsl(203 70% 45% / 0.3);
+    animation: auth-float-2 20s ease-in-out infinite;
+  }
+  .auth-orb-3 {
+    width: 16rem;
+    height: 16rem;
+    top: 40%;
+    left: 55%;
+    background: hsl(24 95% 60% / 0.18);
+    animation: auth-float-3 18s ease-in-out infinite;
+  }
+
+  .auth-particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 9999px;
+    background: hsl(24 95% 60% / 0.7);
+    box-shadow: 0 0 8px hsl(24 95% 60% / 0.8);
+    animation: auth-rise linear infinite;
+  }
+}
+
+@keyframes auth-grid-move {
+  from { background-position: 0 0; }
+  to { background-position: 0 46px; }
+}
+
+@keyframes auth-float-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-40px, 40px) scale(1.1); }
+}
+@keyframes auth-float-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(50px, -30px) scale(1.15); }
+}
+@keyframes auth-float-3 {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-30%, -60%) scale(0.9); }
+}
+
+@keyframes auth-rise {
+  0% { transform: translateY(0); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-105vh); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-grid,
+  .auth-orb,
+  .auth-particle {
+    animation: none;
+  }
+}
