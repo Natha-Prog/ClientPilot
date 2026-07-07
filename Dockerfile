@@ -5,9 +5,9 @@ WORKDIR /app
 # Install system dependencies required by Prisma
 RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 
-# Install root dependencies
+# Install root dependencies (skip postinstall: client/server are installed below)
 COPY package*.json ./
-RUN npm install
+RUN npm install --ignore-scripts
 
 # Install client dependencies and build
 COPY client/package*.json ./client/
