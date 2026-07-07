@@ -1,4 +1,4 @@
-import dotenv from 'dotenv'
+import './lib/env.js'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import fs from 'fs'
@@ -15,7 +15,6 @@ import userRoutes from './routes/users.js'
 import dashboardRoutes from './routes/dashboard.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-dotenv.config({ path: path.join(__dirname, '../../.env') })
 
 const app = express()
 const PORT = process.env.PORT || 3001
