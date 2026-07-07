@@ -184,7 +184,7 @@ const Login = () => {
               {isLogin ? "Pas encore de compte ? S'inscrire" : 'Déjà un compte ? Se connecter'}
             </button>
           </div>
-          {(import.meta.env.DEV || import.meta.env.VITE_SHOW_DEMO_CREDENTIALS === 'true') && (
+          {import.meta.env.VITE_SHOW_DEMO_CREDENTIALS !== 'false' && (
             <div className="mt-6 pt-6 border-t text-center text-xs text-muted-foreground">
               <p>Compte de démonstration :</p>
               <p className="font-mono mt-1">admin@clientpilot.com / admin123</p>
