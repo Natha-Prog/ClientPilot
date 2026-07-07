@@ -23,5 +23,6 @@ services:
           property: connectionString
       - key: JWT_SECRET
         generateValue: true
+      # Comma-separated list of allowed frontend origins (Render + Netlify)
       - key: CLIENT_URL
-        value: https://clientpilot-1.onrender.com
+        value: https://clientpilot-1.onrender.com,https://client-pilot.netlify.app
