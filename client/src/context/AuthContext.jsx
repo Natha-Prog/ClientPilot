@@ -25,6 +25,7 @@ export const AuthProvider = ({ children }) => {
 
     api.me()
       .then((userData) => {
+        if (!userData?.id) throw new Error('Session invalide')
         setUser(userData)
         setIsAuthenticated(true)
         storage.set(STORAGE_KEYS_CONST.AUTH, { user: userData, isAuthenticated: true })

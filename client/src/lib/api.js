@@ -1,14 +1,29 @@
 const BASE = import.meta.env.VITE_API_URL || '/api'
 
 async function request(path, options = {}) {
-  const res = await fetch(`${BASE}${path}`, {
-    credentials: 'include',
-    headers: { 'Content-Type': 'application/json', ...options.headers },
-    ...options,
-  })
+  let res
+  try {
+    res = await fetch(`${BASE}${path}`, {
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json', ...options.headers },
+      ...options,
+    })
+  } catch {
+    throw new Error('Impossible de contacter le serveur. Vérifiez votre connexion.')
+  }
 
-  const data = await res.json().catch(() => ({}))
-  if (!res.ok) throw new Error(data.error || 'Erreur réseau')
+  // A misconfigured deploy (e.g. SPA fallback catching /api) returns HTML with a
+  // 200 status. Treat any non-JSON response as an error instead of silently
+  // returning an empty object — otherwise the app would fake a logged-in state.
+  const contentType = res.headers.get('content-type') || ''
+  const isJson = contentType.includes('application/json')
+  const data = isJson ? await res.json().catch(() => null) : null
+
+  if (!res.ok || !isJson) {
+    const message = (data && data.error) || `Erreur serveur (${res.status})`
+    throw new Error(message)
+  }
+
   return data
 }
 

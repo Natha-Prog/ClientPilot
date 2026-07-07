@@ -32,14 +32,18 @@ export const StoreProvider = ({ children }) => {
         api.getTasks(),
         api.getNotes(),
       ])
-      setClients(c)
-      setProspects(p)
-      setTasks(t)
-      setNotes(n)
-      storage.set(STORAGE_KEYS_CONST.CLIENTS, c)
-      storage.set(STORAGE_KEYS_CONST.PROSPECTS, p)
-      storage.set(STORAGE_KEYS_CONST.TASKS, t)
-      storage.set(STORAGE_KEYS_CONST.NOTES, n)
+      const clientsArr = Array.isArray(c) ? c : []
+      const prospectsArr = Array.isArray(p) ? p : []
+      const tasksArr = Array.isArray(t) ? t : []
+      const notesArr = Array.isArray(n) ? n : []
+      setClients(clientsArr)
+      setProspects(prospectsArr)
+      setTasks(tasksArr)
+      setNotes(notesArr)
+      storage.set(STORAGE_KEYS_CONST.CLIENTS, clientsArr)
+      storage.set(STORAGE_KEYS_CONST.PROSPECTS, prospectsArr)
+      storage.set(STORAGE_KEYS_CONST.TASKS, tasksArr)
+      storage.set(STORAGE_KEYS_CONST.NOTES, notesArr)
       storage.set(STORAGE_KEYS_CONST.LAST_SYNC, new Date().toISOString())
     } catch (err) {
       setError(err.message)
@@ -71,10 +75,10 @@ export const StoreProvider = ({ children }) => {
       const savedTasks = storage.get(STORAGE_KEYS_CONST.TASKS)
       const savedNotes = storage.get(STORAGE_KEYS_CONST.NOTES)
       
-      if (savedClients) setClients(savedClients)
-      if (savedProspects) setProspects(savedProspects)
-      if (savedTasks) setTasks(savedTasks)
-      if (savedNotes) setNotes(savedNotes)
+      if (Array.isArray(savedClients)) setClients(savedClients)
+      if (Array.isArray(savedProspects)) setProspects(savedProspects)
+      if (Array.isArray(savedTasks)) setTasks(savedTasks)
+      if (Array.isArray(savedNotes)) setNotes(savedNotes)
       
       if (isOnline) fetchAll()
     } else {

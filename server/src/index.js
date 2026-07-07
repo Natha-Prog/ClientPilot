@@ -20,8 +20,19 @@ dotenv.config({ path: path.join(__dirname, '../../.env') })
 const app = express()
 const PORT = process.env.PORT || 3001
 
+// Accept one or more allowed origins (comma-separated in CLIENT_URL).
+// e.g. CLIENT_URL="https://clientpilot-1.onrender.com,https://client-pilot.netlify.app"
+const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:5173')
+  .split(',')
+  .map((o) => o.trim())
+  .filter(Boolean)
+
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  origin: (origin, callback) => {
+    // Allow non-browser requests (curl, server-to-server) with no Origin header.
+    if (!origin || allowedOrigins.includes(origin)) return callback(null, true)
+    return callback(new Error(`Origin non autorisée par CORS: ${origin}`))
+  },
   credentials: true,
 }))
 app.use(express.json())
