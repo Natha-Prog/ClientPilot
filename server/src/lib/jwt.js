@@ -7,9 +7,17 @@ export const signToken = (user) =>
 
 export const verifyToken = (token) => jwt.verify(token, JWT_SECRET)
 
+const isProduction = process.env.NODE_ENV === 'production'
+
 export const cookieOptions = {
   httpOnly: true,
-  secure: process.env.NODE_ENV === 'production',
-  sameSite: 'lax',
+  secure: isProduction,
+  sameSite: isProduction ? 'none' : 'lax',
   maxAge: 24 * 60 * 60 * 1000,
+}
+
+export const clearCookieOptions = {
+  httpOnly: true,
+  secure: isProduction,
+  sameSite: isProduction ? 'none' : 'lax',
 }

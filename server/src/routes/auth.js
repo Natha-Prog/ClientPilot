@@ -2,7 +2,7 @@ import { Router } from 'express'
 import bcrypt from 'bcryptjs'
 import { z } from 'zod'
 import prisma from '../lib/prisma.js'
-import { signToken, cookieOptions } from '../lib/jwt.js'
+import { signToken, cookieOptions, clearCookieOptions } from '../lib/jwt.js'
 import { authenticate } from '../middleware/auth.js'
 
 const router = Router()
@@ -58,7 +58,7 @@ router.post('/register', async (req, res, next) => {
 })
 
 router.post('/logout', (req, res) => {
-  res.clearCookie('token', { httpOnly: true, sameSite: 'lax' })
+  res.clearCookie('token', clearCookieOptions)
   res.json({ success: true })
 })
 

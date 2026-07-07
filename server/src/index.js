@@ -36,41 +36,19 @@ app.use('/api/notes', noteRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/dashboard', dashboardRoutes)
 
-// Always serve static files in production or when dist exists
+// Serve the built frontend when available (single-server deployments)
 const clientDist = path.join(__dirname, '../../client/dist')
 const isProduction = process.env.NODE_ENV === 'production'
 const distExists = fs.existsSync(clientDist)
 
-console.log('NODE_ENV:', process.env.NODE_ENV)
-console.log('Is production:', isProduction)
-console.log('Dist directory:', clientDist)
-console.log('Dist exists:', distExists)
-
 if (isProduction || distExists) {
-  if (distExists) {
-    const files = fs.readdirSync(clientDist)
-    console.log('Files in dist:', files)
-  }
-  
-  // Log all requests
-  app.use((req, res, next) => {
-    console.log(`${req.method} ${req.path}`)
-    next()
-  })
-  
-  // Serve static files
   app.use(express.static(clientDist))
-  
-  app.get('*', (req, res) => {
-    if (!req.path.startsWith('/api')) {
-      console.log('Serving index.html for:', req.path)
-      res.sendFile(path.join(clientDist, 'index.html'), (err) => {
-        if (err) {
-          console.error('Error serving index.html:', err)
-          res.status(404).send('Not found')
-        }
-      })
-    }
+
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api')) return next()
+    res.sendFile(path.join(clientDist, 'index.html'), (err) => {
+      if (err) res.status(404).send('Not found')
+    })
   })
 }
 
