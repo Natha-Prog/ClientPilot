@@ -21,16 +21,49 @@ const app = express()
 const PORT = process.env.PORT || 3001
 
 // Accept one or more allowed origins (comma-separated in CLIENT_URL).
-// e.g. CLIENT_URL="https://clientpilot-1.onrender.com,https://client-pilot.netlify.app"
-const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:5173')
-  .split(',')
-  .map((o) => o.trim())
-  .filter(Boolean)
+// Railway/Render public URLs are auto-added for full-stack deploys.
+function getAllowedOrigins() {
+  const origins = (process.env.CLIENT_URL || 'http://localhost:5173')
+    .split(',')
+    .map((o) => o.trim())
+    .filter(Boolean)
+
+  if (process.env.RAILWAY_PUBLIC_DOMAIN) {
+    origins.push(`https://${process.env.RAILWAY_PUBLIC_DOMAIN}`)
+  }
+  if (process.env.RAILWAY_STATIC_URL) {
+    origins.push(process.env.RAILWAY_STATIC_URL.replace(/\/$/, ''))
+  }
+  if (process.env.RENDER_EXTERNAL_URL) {
+    origins.push(process.env.RENDER_EXTERNAL_URL.replace(/\/$/, ''))
+  }
+
+  return [...new Set(origins)]
+}
+
+const allowedOrigins = getAllowedOrigins()
+
+// Vercel/Railway generate per-deployment (preview) subdomains. Allow them by
+// hostname suffix so preview URLs don't each need to be listed in CLIENT_URL.
+const allowedHostSuffixes = ['.vercel.app', '.up.railway.app']
+
+function isOriginAllowed(origin) {
+  if (allowedOrigins.includes(origin)) return true
+  try {
+    const { protocol, hostname } = new URL(origin)
+    if (protocol !== 'https:') return false
+    return allowedHostSuffixes.some(
+      (suffix) => hostname === suffix.slice(1) || hostname.endsWith(suffix),
+    )
+  } catch {
+    return false
+  }
+}
 
 app.use(cors({
   origin: (origin, callback) => {
     // Allow non-browser requests (curl, server-to-server) with no Origin header.
-    if (!origin || allowedOrigins.includes(origin)) return callback(null, true)
+    if (!origin || isOriginAllowed(origin)) return callback(null, true)
     return callback(new Error(`Origin non autorisée par CORS: ${origin}`))
   },
   credentials: true,

@@ -100,12 +100,68 @@ ai-customer-service/
 3. `docker compose up -d`
 4. `npm run build && npm start`
 
-### Option 2 : Railway / Render
+### Option 2 : Railway / Render (full stack)
 
-1. Créer un service PostgreSQL
+1. Créer un service PostgreSQL (Neon, Railway, Supabase…)
 2. Déployer le repo avec `DATABASE_URL` en variable d'environnement
 3. Build command : `npm run build`
 4. Start command : `npm start`
+5. Exécuter une fois : `npm run db:migrate` puis `npm run db:seed`
+
+### Option 3 : Vercel (frontend) + Railway / Render (API)
+
+Architecture recommandée : le frontend React sur Vercel, l'API Express et PostgreSQL sur Railway ou Render.
+
+#### Étape 1 — API + base de données (Railway ou Render)
+
+1. Créer une base PostgreSQL (Neon, Railway, Supabase…)
+2. Déployer le **repo entier** (racine du projet, pas `client/`)
+3. Variables d'environnement :
+
+| Variable | Exemple |
+|----------|---------|
+| `DATABASE_URL` | `postgresql://user:pass@host/db` |
+| `JWT_SECRET` | chaîne aléatoire longue |
+| `NODE_ENV` | `production` |
+| `CLIENT_URL` | `https://client-pilot-qfkx.vercel.app` |
+
+4. Build : `npm run build` — Start : `npm start`
+5. Une fois déployé, lancer les migrations (shell Railway/Render ou en local avec la même `DATABASE_URL`) :
+
+```bash
+npm run db:migrate
+npm run db:seed
+```
+
+6. Noter l'URL publique de l'API (ex. `https://clientpilot-api.railway.app`)
+
+#### Étape 2 — Frontend sur Vercel
+
+1. Importer le repo sur [vercel.com](https://vercel.com)
+2. Paramètres du projet :
+
+| Paramètre | Valeur |
+|-----------|--------|
+| Root Directory | `client` |
+| Framework Preset | Vite |
+| Build Command | `npm run build` |
+| Output Directory | `dist` |
+
+3. Variable d'environnement Vercel :
+
+| Variable | Valeur |
+|----------|--------|
+| `VITE_API_URL` | `https://clientpilot-production.up.railway.app/api` |
+
+4. Déployer. Après chaque changement de `VITE_API_URL`, redéployer (variable de build).
+
+Le fichier `client/vercel.json` gère le routage SPA (React Router). Voir `client/.env.example` pour la liste des variables frontend.
+
+#### Vérification
+
+- L'URL Vercel doit être listée dans `CLIENT_URL` côté API (CORS + cookies JWT)
+- L'API doit être en HTTPS (`NODE_ENV=production` active `secure` + `sameSite=none` sur les cookies)
+- Tester la connexion avec le compte admin après le seed
 
 ## Fonctionnalités
 
