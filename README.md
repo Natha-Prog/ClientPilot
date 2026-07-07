@@ -142,10 +142,12 @@ npm run db:seed
 
 | Paramètre | Valeur |
 |-----------|--------|
-| Root Directory | `client` |
+| Root Directory | *(laisser vide — le `vercel.json` à la racine build `client/`)* |
 | Framework Preset | Vite |
-| Build Command | `npm run build` |
-| Output Directory | `dist` |
+| Build Command | `npm run build --prefix client` |
+| Output Directory | `client/dist` |
+
+> **Alternative :** définir Root Directory sur `client` (alors Build = `npm run build`, Output = `dist`). Ne pas mélanger les deux configurations.
 
 3. Variable d'environnement Vercel :
 
@@ -162,6 +164,9 @@ Le fichier `client/vercel.json` gère le routage SPA (React Router). Voir `clien
 - L'URL Vercel doit être listée dans `CLIENT_URL` côté API (CORS + cookies JWT)
 - L'API doit être en HTTPS (`NODE_ENV=production` active `secure` + `sameSite=none` sur les cookies)
 - Tester la connexion avec le compte admin après le seed
+- Si Vercel affiche `404: NOT_FOUND`, vérifier que le build a réussi et que Output Directory pointe vers `client/dist` (ou `dist` si Root Directory = `client`)
+
+> **Accès immédiat :** l'app est déjà disponible en full-stack sur Railway : `https://clientpilot-production.up.railway.app`
 
 ## Fonctionnalités
 
