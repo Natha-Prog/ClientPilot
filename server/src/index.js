@@ -44,7 +44,7 @@ const allowedOrigins = getAllowedOrigins()
 
 // Vercel/Railway generate per-deployment (preview) subdomains. Allow them by
 // hostname suffix so preview URLs don't each need to be listed in CLIENT_URL.
-const allowedHostSuffixes = ['.vercel.app', '.up.railway.app']
+const allowedHostSuffixes = ['.vercel.app', '.up.railway.app', '.netlify.app', '.onrender.com']
 
 function isOriginAllowed(origin) {
   if (allowedOrigins.includes(origin)) return true
@@ -71,6 +71,9 @@ app.use(express.json())
 app.use(cookieParser())
 
 // API routes must be defined BEFORE static file serving
+app.get('/api/health', (_req, res) => {
+  res.json({ ok: true })
+})
 app.use('/api/auth', authRoutes)
 app.use('/api/clients', clientRoutes)
 app.use('/api/prospects', prospectRoutes)

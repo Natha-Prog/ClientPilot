@@ -8,8 +8,8 @@
     "start": "npm run db:migrate && npm run db:seed && node src/index.js",
     "start:api": "node src/index.js",
     "build": "prisma generate",
-    "db:migrate": "npx dotenv -e ../.env -- prisma migrate deploy",
-    "db:seed": "npx dotenv -e ../.env -- node src/seed.js",
+    "db:migrate": "node scripts/migrate.js",
+    "db:seed": "node src/seed.js",
     "lint": "eslint src --ext .js"
   },
   "dependencies": {

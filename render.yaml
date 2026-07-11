@@ -1,28 +1,29 @@
+# Render: API only (Postgres = Supabase, frontend = Netlify)
 services:
-  # PostgreSQL Database
-  - type: postgres
-    name: clientpilot-db
-    databaseName: clientpilot
-    user: clientpilot
-    plan: free
-    ipAllowList: []
-
-  # Web Service (Backend + Frontend)
   - type: web
-    name: clientpilot
-    env: docker
+    name: clientpilot-api
+    runtime: node
     plan: free
-    dockerContext: .
-    dockerfilePath: ./Dockerfile
+    region: frankfurt
+    buildCommand: npm install --prefix server && cd server && npx prisma generate
+    startCommand: cd server && npm start
+    healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV
         value: production
+      # Set these in the Render dashboard (Supabase connection strings)
       - key: DATABASE_URL
-        fromDatabase:
-          name: clientpilot-db
-          property: connectionString
+        sync: false
+      - key: DIRECT_URL
+        sync: false
       - key: JWT_SECRET
         generateValue: true
-      # Comma-separated list of allowed frontend origins (Render + Netlify)
+      # Update with your real Netlify URL after first deploy
       - key: CLIENT_URL
-        value: https://clientpilot-1.onrender.com,https://client-pilot.netlify.app
+        value: https://client-pilot.netlify.app
+      - key: ADMIN_EMAIL
+        value: admin@clientpilot.com
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: ADMIN_NAME
+        value: Administrateur
