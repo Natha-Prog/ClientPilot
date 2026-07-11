@@ -1,12 +1,35 @@
 const BASE = import.meta.env.VITE_API_URL || '/api'
+const TOKEN_KEY = 'clientpilot_token'
+
+export function getAuthToken() {
+  try {
+    return localStorage.getItem(TOKEN_KEY)
+  } catch {
+    return null
+  }
+}
+
+export function setAuthToken(token) {
+  try {
+    if (token) localStorage.setItem(TOKEN_KEY, token)
+    else localStorage.removeItem(TOKEN_KEY)
+  } catch {
+    // ignore
+  }
+}
 
 async function request(path, options = {}) {
+  const token = getAuthToken()
   let res
   try {
     res = await fetch(`${BASE}${path}`, {
       credentials: 'include',
-      headers: { 'Content-Type': 'application/json', ...options.headers },
       ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...options.headers,
+      },
     })
   } catch {
     throw new Error('Impossible de contacter le serveur. Vérifiez votre connexion.')

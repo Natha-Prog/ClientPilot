@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
-import { api } from '../lib/api'
+import { api, setAuthToken } from '../lib/api'
 import { storage, STORAGE_KEYS_CONST } from '../lib/storage'
 
 const AuthContext = createContext(null)
@@ -10,6 +10,12 @@ export const useAuth = () => {
   return context
 }
 
+function userFromAuthPayload(payload) {
+  if (!payload) return null
+  const { token: _token, ...user } = payload
+  return user
+}
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -17,7 +23,8 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const savedAuth = storage.get(STORAGE_KEYS_CONST.AUTH)
-    if (savedAuth) {
+    if (savedAuth?.token) setAuthToken(savedAuth.token)
+    if (savedAuth?.user) {
       setUser(savedAuth.user)
       setIsAuthenticated(savedAuth.isAuthenticated)
       setLoading(false)
@@ -28,11 +35,17 @@ export const AuthProvider = ({ children }) => {
         if (!userData?.id) throw new Error('Session invalide')
         setUser(userData)
         setIsAuthenticated(true)
-        storage.set(STORAGE_KEYS_CONST.AUTH, { user: userData, isAuthenticated: true })
+        const token = savedAuth?.token || null
+        storage.set(STORAGE_KEYS_CONST.AUTH, {
+          user: userData,
+          isAuthenticated: true,
+          ...(token ? { token } : {}),
+        })
       })
       .catch(() => {
         setUser(null)
         setIsAuthenticated(false)
+        setAuthToken(null)
         storage.remove(STORAGE_KEYS_CONST.AUTH)
       })
       .finally(() => setLoading(false))
@@ -40,10 +53,16 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const userData = await api.login(email, password)
+      const payload = await api.login(email, password)
+      const userData = userFromAuthPayload(payload)
+      if (payload.token) setAuthToken(payload.token)
       setUser(userData)
       setIsAuthenticated(true)
-      storage.set(STORAGE_KEYS_CONST.AUTH, { user: userData, isAuthenticated: true })
+      storage.set(STORAGE_KEYS_CONST.AUTH, {
+        user: userData,
+        isAuthenticated: true,
+        token: payload.token,
+      })
       return { success: true }
     } catch (err) {
       return { success: false, error: err.message }
@@ -52,10 +71,16 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (email, password, name, role = 'operator') => {
     try {
-      const userData = await api.register(email, password, name, role)
+      const payload = await api.register(email, password, name, role)
+      const userData = userFromAuthPayload(payload)
+      if (payload.token) setAuthToken(payload.token)
       setUser(userData)
       setIsAuthenticated(true)
-      storage.set(STORAGE_KEYS_CONST.AUTH, { user: userData, isAuthenticated: true })
+      storage.set(STORAGE_KEYS_CONST.AUTH, {
+        user: userData,
+        isAuthenticated: true,
+        token: payload.token,
+      })
       return { success: true }
     } catch (err) {
       return { success: false, error: err.message }
@@ -70,6 +95,7 @@ export const AuthProvider = ({ children }) => {
     }
     setUser(null)
     setIsAuthenticated(false)
+    setAuthToken(null)
     storage.remove(STORAGE_KEYS_CONST.AUTH)
   }
 

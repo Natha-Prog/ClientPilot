@@ -28,7 +28,14 @@ router.post('/login', async (req, res, next) => {
     }
     const token = signToken(user)
     res.cookie('token', token, cookieOptions)
-    res.json({ id: user.id, email: user.email, name: user.name, role: user.role, createdAt: user.createdAt })
+    res.json({
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+      createdAt: user.createdAt,
+      token,
+    })
   } catch (err) {
     next(err)
   }
@@ -51,7 +58,14 @@ router.post('/register', async (req, res, next) => {
     })
     const token = signToken(user)
     res.cookie('token', token, cookieOptions)
-    res.status(201).json({ id: user.id, email: user.email, name: user.name, role: user.role, createdAt: user.createdAt })
+    res.status(201).json({
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+      createdAt: user.createdAt,
+      token,
+    })
   } catch (err) {
     next(err)
   }
