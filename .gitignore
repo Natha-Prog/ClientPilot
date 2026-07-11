@@ -10,3 +10,9 @@ coverage/
 server/node_modules/
 client/node_modules/
 client/dist/
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+!.env.example
