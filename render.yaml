@@ -18,9 +18,8 @@ services:
         sync: false
       - key: JWT_SECRET
         generateValue: true
-      # Update with your real Netlify URL after first deploy
       - key: CLIENT_URL
-        value: https://client-pilot.netlify.app
+        value: https://client-pilot-pro.netlify.app
       - key: ADMIN_EMAIL
         value: admin@clientpilot.com
       - key: ADMIN_PASSWORD
