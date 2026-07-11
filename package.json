@@ -15,10 +15,13 @@
     "db:migrate": "cd server && npm run db:migrate",
     "db:seed": "cd server && npm run db:seed",
     "lint": "cd client && npm run lint && cd ../server && npm run lint",
-    "format": "prettier --write \"client/src/**/*.{js,jsx}\" \"server/src/**/*.js\""
+    "format": "prettier --write \"client/src/**/*.{js,jsx}\" \"server/src/**/*.js\"",
+    "deploy": "wrangler deploy",
+    "preview": "wrangler dev"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
-    "prettier": "^3.2.5"
+    "prettier": "^3.2.5",
+    "wrangler": "^4.110.0"
   }
 }
